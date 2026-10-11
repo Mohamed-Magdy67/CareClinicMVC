@@ -1,0 +1,79 @@
+@model CareClinicMVC.ViewModels.AppointmentFormViewModel
+
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-md-11">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0 fw-bold">📅 Book New Appointment</h5>
+                    <small class="text-white-50">Select a patient, doctor, and an available consultation time slot</small>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="row g-3">
+                            @* {{!-- Patient Dropdown --}} *@
+                            <div class="col-md-6">
+                                <label asp-for="PatientId" class="form-label fw-semibold"></label>
+                                <select asp-for="PatientId" asp-items="Model.PatientList" class="form-select">
+                                    <option value="">-- Select Patient --</option>
+                                </select>
+                                <span asp-validation-for="PatientId" class="text-danger small"></span>
+                            </div>
+
+                            @* {{!-- Doctor Dropdown --}} *@
+                            <div class="col-md-6">
+                                <label asp-for="DoctorId" class="form-label fw-semibold"></label>
+                                <select asp-for="DoctorId" asp-items="Model.DoctorList" class="form-select">
+                                    <option value="">-- Select Doctor --</option>
+                                </select>
+                                <span asp-validation-for="DoctorId" class="text-danger small"></span>
+                            </div>
+
+                            @* {{!-- Appointment Date --}} *@
+                            <div class="col-md-6">
+                                <label asp-for="AppointmentDate" class="form-label fw-semibold"></label>
+                                <input asp-for="AppointmentDate" type="date" class="form-control" />
+                                <span asp-validation-for="AppointmentDate" class="text-danger small"></span>
+                            </div>
+
+                            @* {{!-- Time Slot Dropdown --}} *@
+                            <div class="col-md-6">
+                                <label asp-for="TimeSlot" class="form-label fw-semibold"></label>
+                                <select asp-for="TimeSlot" asp-items="Model.TimeSlotList" class="form-select">
+                                    <option value="">-- Select Time Slot --</option>
+                                </select>
+                                <span asp-validation-for="TimeSlot" class="text-danger small"></span>
+                            </div>
+
+                            @* {{!-- Reason for Visit --}} *@
+                            <div class="col-12">
+                                <label asp-for="ReasonForVisit" class="form-label fw-semibold"></label>
+                                <textarea asp-for="ReasonForVisit" rows="3" class="form-control" placeholder="Describe symptoms or purpose of the consultation..."></textarea>
+                                <span asp-validation-for="ReasonForVisit" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+                            <button type="submit" class="btn btn-primary px-4">Confirm & Book Appointment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

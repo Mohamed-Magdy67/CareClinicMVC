@@ -1,0 +1,98 @@
+@model CareClinicMVC.Models.Doctor
+
+@{
+    ViewData["Title"] = "Doctor Profile";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <!-- Doctor Profile Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-info text-white py-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0 fw-bold">👨‍⚕️ Dr. @Model.FullName</h4>
+                        <span class="badge bg-light text-dark mt-1">@Model.Specialization</span>
+                    </div>
+                    @if (Model.Department != null)
+                    {
+                        <span class="badge bg-primary fs-6">@Model.Department.Name</span>
+                    }
+                </div>
+                <div class="card-body p-4">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4 text-muted">Email Address:</dt>
+                        <dd class="col-sm-8 fw-semibold">@Model.Email</dd>
+
+                        <dt class="col-sm-4 text-muted">Phone Number:</dt>
+                        <dd class="col-sm-8 fw-semibold">@Model.Phone</dd>
+
+                        <dt class="col-sm-4 text-muted">Specialization:</dt>
+                        <dd class="col-sm-8 fw-semibold">@Model.Specialization</dd>
+
+                        <dt class="col-sm-4 text-muted">Department:</dt>
+                        <dd class="col-sm-8 fw-semibold">
+                            @(Model.Department?.Name ?? "Unassigned")
+                            @if (Model.Department?.Location != null)
+                            {
+                                <small class="text-muted">(@Model.Department.Location)</small>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Consultation Fee:</dt>
+                        <dd class="col-sm-8 fw-bold text-success fs-5">
+                            $@Model.ConsultationFee.ToString("N2")
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Working Schedules Section -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 fw-bold">🗓️ Working Schedule</h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.Schedules != null && Model.Schedules.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Day</th>
+                                        <th>Shift Hours</th>
+                                        <th>Max Patients</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var schedule in Model.Schedules)
+                                    {
+                                        <tr>
+                                            <td class="ps-3 fw-semibold">@schedule.DayOfWeek</td>
+                                            <td>@schedule.StartTime.ToString(@"hh\:mm") - @schedule.EndTime.ToString(@"hh\:mm")</td>
+                                            <td><span class="badge bg-secondary">@schedule.MaxPatientsPerDay patients</span></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-4 text-center text-muted">
+                            <p class="mb-0">No active shifts scheduled for this doctor yet.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center">
+                <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+                <div>
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning px-4 text-dark fw-semibold">Edit Doctor</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

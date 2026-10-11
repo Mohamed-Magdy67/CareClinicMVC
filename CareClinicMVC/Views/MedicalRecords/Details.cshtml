@@ -1,0 +1,129 @@
+@model CareClinicMVC.Models.MedicalRecord
+
+@{
+    ViewData["Title"] = "Medical Prescription";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-md-11">
+
+            @* {{!-- Printable Prescription Card --}} *@
+            <div class="card shadow border-0 mb-4" id="prescriptionCard">
+                {{!-- Clinic Header --}}
+                <div class="card-header bg-primary text-white py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="fw-bold mb-0">🏥 CareClinic Hospital</h3>
+                            <small class="text-white-50">Official Consultation Report & Medical Prescription</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-light text-primary fs-6">Rx Prescription</span>
+                            <div class="small text-white-50 mt-1">Record #: @Model.Id</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                   @*  {{!-- Doctor & Patient Details Grid --}} *@
+                    <div class="row mb-4 p-3 bg-light rounded-3">
+                        <div class="col-sm-6 border-end">
+                            <h6 class="text-muted text-uppercase small fw-bold mb-2">Patient Details</h6>
+                            <h5 class="fw-bold text-dark mb-1">🧑‍🤝‍🧑 @(Model.Appointment?.Patient?.FullName ?? "Patient")</h5>
+                            <div class="small text-muted">
+                                <div><strong>Phone:</strong> @(Model.Appointment?.Patient?.Phone ?? "—")</div>
+                                <div><strong>Gender / Blood:</strong> @(Model.Appointment?.Patient?.Gender.ToString() ?? "—") | <span class="text-danger fw-bold">@(Model.Appointment?.Patient?.BloodGroup ?? "—")</span></div>
+                                <div><strong>Date of Birth:</strong> @(Model.Appointment?.Patient?.DateOfBirth.ToString("yyyy-MM-dd") ?? "—")</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 ps-sm-4 mt-3 mt-sm-0">
+                            <h6 class="text-muted text-uppercase small fw-bold mb-2">Prescribing Physician</h6>
+                            <h5 class="fw-bold text-dark mb-1">👨‍⚕️ Dr. @(Model.Appointment?.Doctor?.FullName ?? "Doctor")</h5>
+                            <div class="small text-muted">
+                                <div><strong>Specialization:</strong> @(Model.Appointment?.Doctor?.Specialization ?? "General")</div>
+                                <div><strong>Department:</strong> @(Model.Appointment?.Doctor?.Department?.Name ?? "General Clinic")</div>
+                                <div><strong>Consultation Date:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* {{!-- Diagnosis Section --}} *@
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-primary text-uppercase small">📋 Clinical Diagnosis</h6>
+                        <div class="p-3 bg-primary-subtle border border-primary-subtle rounded-3">
+                            <h5 class="fw-bold text-primary mb-0">@Model.Diagnosis</h5>
+                        </div>
+                    </div>
+
+                    @* {{!-- Prescribed Medications (Rx) --}} *@
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-success text-uppercase small d-flex align-items-center">
+                            <span class="fs-5 me-1">℞</span> Prescribed Medications & Dosage
+                        </h6>
+                        <div class="p-4 bg-white border rounded-3 shadow-sm">
+                            @if (!string.IsNullOrEmpty(Model.PrescribedMedications))
+                            {
+                                <pre class="font-monospace mb-0 fs-6 text-dark" style="white-space: pre-wrap; font-family: inherit;">@Model.PrescribedMedications</pre>
+                            }
+                            else
+                            {
+                                <p class="text-muted mb-0 font-italic">No medications prescribed for this consultation.</p>
+                            }
+                        </div>
+                    </div>
+
+                   @*  {{!-- Doctor Notes & Follow Up --}} *@
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <h6 class="fw-bold text-muted text-uppercase small">Doctor Notes & Advice</h6>
+                            <div class="p-3 bg-light rounded-3">
+                                <p class="mb-0 text-dark">@(Model.DoctorNotes ?? "No additional notes provided.")</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <h6 class="fw-bold text-muted text-uppercase small">Follow-Up Consultation</h6>
+                            <div class="p-3 bg-light rounded-3 text-center">
+                                @if (Model.FollowUpDate.HasValue)
+                                {
+                                    <div class="fw-bold text-danger fs-5">@Model.FollowUpDate.Value.ToString("yyyy-MM-dd")</div>
+                                    <small class="text-muted">Recommended Return Date</small>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">As needed</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                  @*   {{!-- Signature Line (Print Friendly) --}} *@
+                    <div class="row mt-5 pt-4 border-top">
+                        <div class="col-6 text-muted small">
+                            Generated by CareClinic Hospital System on @DateTime.Now.ToString("yyyy-MM-dd")
+                        </div>
+                        <div class="col-6 text-end">
+                            <div class="d-inline-block text-center border-top border-dark pt-1" style="min-width: 200px;">
+                                <small class="fw-bold">Dr. @(Model.Appointment?.Doctor?.FullName ?? "Physician")</small>
+                                <div class="small text-muted">Physician Signature & Stamp</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+           @*  {{!-- Actions --}} *@
+            <div class="d-flex justify-content-between align-items-center mb-5 d-print-none">
+                <a asp-controller="Appointments" asp-action="Index" class="btn btn-outline-secondary">
+                    ← Back to Appointments
+                </a>
+                <div>
+                    <button onclick="window.print()" class="btn btn-primary px-4 shadow-sm">
+                        🖨️ Print Prescription
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
